@@ -1,0 +1,6 @@
+{
+    "CN": "simpleSAMLphp testenv wildcard certificate",
+    "hosts": [
+        "*.simplesamlphp.test.umich.localhost"
+    ]
+}

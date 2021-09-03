@@ -1,0 +1,36 @@
+version: '2'
+services:
+  sp1.simplesamlphp.test.umich.localhost:
+    build: build
+    hostname: sp1
+    volumes:
+      - ./simplesamlphp:/code
+      - ./sp1:/conf
+    working_dir: /code
+    environment:
+      - SIMPLESAMLPHP_CONFIG_DIR=/conf/
+    command: apache2 -D FOREGROUND
+    links:
+      - redis
+
+  redis:
+    image: redis
+
+  gencert:
+    image: cfssl/cfssl
+    volumes:
+      - .:/work
+    working_dir: /work
+    entrypoint: /bin/bash
+    command:
+      - ./ca/generate.sh
+
+  nginx:
+    image: nginx:stable
+    links:
+      - sp1.simplesamlphp.test.umich.localhost
+    volumes:
+      - ./nginx:/etc/nginx:ro
+    ports:
+      - '80:80'
+      - '443:443'
